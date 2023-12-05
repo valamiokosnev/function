@@ -12,5 +12,5 @@ function screenToCoordY(y) {
 }
 
 function coordToScreenY(y, offset=0) {
-    return -(y - Math.round(canvas.height/2)) + cameraPos.y + offset
+    return -(y / zoom - Math.round(canvas.height/2)) + cameraPos.y  + offset
 }
