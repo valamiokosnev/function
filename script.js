@@ -16,8 +16,8 @@ var cameraPos = {
 }
 var zoom = 1
 
-const defaultPxPerUnit = 50
-var pxPerUnit = defaultPxPerUnit
+const defaultPtPerUnit = 50
+var ptPerUnit = defaultPtPerUnit
 
 const coordinateFontSize = 20
 
@@ -28,29 +28,29 @@ function updateCanvas() {
 }
 
 function drawAxis() {
-    pxPerUnit = Number(parseFloat(defaultPxPerUnit * zoom).toPrecision(12))
-    console.log(pxPerUnit);
     ctx.font = `${coordinateFontSize}px serif`
     ctx.textAlign = 'end'
 
-    let yStart = Math.floor((cameraPos.y - Math.round(canvas.height/2)) / pxPerUnit) * pxPerUnit
-    let yEnd = cameraPos.y + Math.round(canvas.height/2)
-    for (let y = yStart; y < yEnd; y += pxPerUnit) {
-        ctx.fillText(y / pxPerUnit, cameraPos.x + Math.round(canvas.width/2) - 10, yEnd - y + (coordinateFontSize / 3))
+    let yStart = Math.floor((cameraPos.y - Math.round(canvas.height/2)) / ptPerUnit) * ptPerUnit
+    let yEnd = cameraPos.y + Math.round(canvas.height/2) + ptPerUnit
 
-        ctx.moveTo(0, yEnd - y)
-        ctx.lineTo(canvas.width, yEnd - y)
+    console.log(yStart, yEnd);
+    for (let y = yStart; y < yEnd; y += ptPerUnit) {
+        ctx.fillText(y / ptPerUnit, coordToScreenX(0, -10), coordToScreenY(y, coordinateFontSize / 3))
+
+        ctx.moveTo(0, coordToScreenY(y))
+        ctx.lineTo(canvas.width, coordToScreenY(y))
     }
 
     ctx.textAlign = 'center'
 
-    let xStart = Math.floor((cameraPos.x - Math.round(canvas.width/2)) / pxPerUnit) * pxPerUnit
-    let xEnd = cameraPos.x + Math.round(canvas.width/2)
-    for (let x = xStart; x < xEnd; x += pxPerUnit) {
-        ctx.fillText(x / pxPerUnit, xEnd - x, cameraPos.y + Math.round(canvas.height/2) + (coordinateFontSize))
+    let xStart = Math.floor((cameraPos.x - Math.round(canvas.width/2)) / ptPerUnit) * ptPerUnit
+    let xEnd = cameraPos.x + Math.round(canvas.width/2) + ptPerUnit
+    for (let x = xStart; x < xEnd; x += ptPerUnit) {
+        ctx.fillText(x / ptPerUnit, coordToScreenX(-x), coordToScreenY(0, coordinateFontSize))
 
-        ctx.moveTo(xEnd - x, 0)
-        ctx.lineTo(xEnd - x, canvas.height)
+        ctx.moveTo(coordToScreenX(-x), 0)
+        ctx.lineTo(coordToScreenX(-x), canvas.height)
     }
     
 
@@ -62,11 +62,11 @@ function drawAxis() {
 
     //Y-axis
     ctx.moveTo(
-        Math.round(canvas.width/2) + cameraPos.x,
+        coordToScreenX(0),
         0
     )
     ctx.lineTo(
-        Math.round(canvas.width/2) + cameraPos.x,
+        coordToScreenX(0),
         canvas.height
     )
 
@@ -77,11 +77,11 @@ function drawAxis() {
     //X-axis
     ctx.moveTo(
         0,
-        Math.round(canvas.height/2) + cameraPos.y
+        coordToScreenY(0)
     )
     ctx.lineTo(
         canvas.width,
-        Math.round(canvas.height/2) + cameraPos.y
+        coordToScreenY(0)
     )
 
     ctx.strokeStyle = "black";
