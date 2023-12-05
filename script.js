@@ -31,8 +31,19 @@ function drawAxis() {
     ctx.font = `${coordinateFontSize}px serif`
     ctx.textAlign = 'end'
 
-    let yStart = Math.floor((cameraPos.y - Math.round(canvas.height/2)) / ptPerUnit) * ptPerUnit
-    let yEnd = cameraPos.y + Math.round(canvas.height/2) + ptPerUnit
+    /* let yStart = Math.floor((cameraPos.y - Math.round(canvas.height/2)) / ptPerUnit) * ptPerUnit
+    let yEnd = cameraPos.y + Math.round(canvas.height/2) + ptPerUnit */
+
+    let yStart = cameraPos.y - Math.round(canvas.height/2)
+    let yEnd = cameraPos.y + Math.round(canvas.height/2)
+
+    let range = Math.abs(yStart - yEnd)
+    range = range - range * zoom
+
+    yStart += range / 2
+    yEnd -= range / 2
+
+    //yStart = Math.floor(yStart / ptPerUnit) * ptPerUnit
 
     console.log(yStart, yEnd);
     for (let y = yStart; y < yEnd; y += ptPerUnit) {
@@ -42,7 +53,7 @@ function drawAxis() {
         ctx.lineTo(canvas.width, coordToScreenY(y))
     }
 
-    ctx.textAlign = 'center'
+    /* ctx.textAlign = 'center'
 
     let xStart = Math.floor((cameraPos.x - Math.round(canvas.width/2)) / ptPerUnit) * ptPerUnit
     let xEnd = cameraPos.x + Math.round(canvas.width/2) + ptPerUnit
@@ -51,7 +62,7 @@ function drawAxis() {
 
         ctx.moveTo(coordToScreenX(-x), 0)
         ctx.lineTo(coordToScreenX(-x), canvas.height)
-    }
+    } */
     
 
     ctx.strokeStyle = "gray";
