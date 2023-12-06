@@ -16,7 +16,7 @@ var cameraPos = {
 }
 var zoom = 1
 
-const defaultPtPerUnit = 50
+const defaultPtPerUnit = 64
 var ptPerUnit = defaultPtPerUnit
 
 const coordinateFontSize = 20
@@ -31,19 +31,32 @@ function drawAxis() {
     ctx.font = `${coordinateFontSize}px serif`
     ctx.textAlign = 'end'
     
-
-    let yStart = Math.floor((cameraPos.y - Math.round(canvas.height/2)) / ptPerUnit) * ptPerUnit
+    let yStart = cameraPos.y - Math.round(canvas.height/2)
     let yEnd = cameraPos.y + Math.round(canvas.height/2)
 
-    console.log(yStart, yEnd);
+    let range = Math.abs(yStart - yEnd)
+    range = range - range * zoom
+
+    yStart += range / 2
+    yEnd -= range / 2
+
+    yStart = Math.floor(yStart / ptPerUnit) * ptPerUnit
+
+    if(Math.abs(yEnd - yStart) / ptPerUnit < 10) {
+        ptPerUnit /= 2
+    } else if(Math.abs(yEnd - yStart) / ptPerUnit > 20) {
+        ptPerUnit *= 2
+    }
+
+    console.log(yStart, yEnd, ptPerUnit);
     for (let y = yStart; y < yEnd; y += ptPerUnit) {
-        ctx.fillText(y / ptPerUnit, coordToScreenX(0, -10), coordToScreenY(y, coordinateFontSize / 3))
+        ctx.fillText(y / defaultPtPerUnit, coordToScreenX(0, -10), coordToScreenY(y, coordinateFontSize / 3))
 
         ctx.moveTo(0, coordToScreenY(y))
         ctx.lineTo(canvas.width, coordToScreenY(y))
     }
 
-    ctx.textAlign = 'center'
+    /* ctx.textAlign = 'center'
 
     let xStart = Math.floor((cameraPos.x - Math.round(canvas.width/2)) / ptPerUnit) * ptPerUnit
     let xEnd = cameraPos.x + Math.round(canvas.width/2) + ptPerUnit
@@ -52,7 +65,7 @@ function drawAxis() {
 
         ctx.moveTo(coordToScreenX(-x), 0)
         ctx.lineTo(coordToScreenX(-x), canvas.height)
-    }
+    } */
     
 
     ctx.strokeStyle = "gray";
