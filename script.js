@@ -14,61 +14,94 @@ var cameraPos = {
     x: 0,
     y: 0
 }
+
 var zoom = 1
 
 const defaultPtPerUnit = 64
-var ptPerUnit = defaultPtPerUnit
+var yPtPerUnit= defaultPtPerUnit
+var xPtPerUnit = defaultPtPerUnit
 
 const coordinateFontSize = 20
 
 function updateCanvas() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    //ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#222831"
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
 
     drawAxis()
 }
 
 function drawAxis() {
     ctx.font = `${coordinateFontSize}px serif`
+    if (vicci) ctx.drawImage(document.getElementById("szia"), 0, 0, 1920, 1080)
     ctx.textAlign = 'end'
-    
+
     let yStart = cameraPos.y - Math.round(canvas.height/2)
     let yEnd = cameraPos.y + Math.round(canvas.height/2)
 
     let range = Math.abs(yStart - yEnd)
-    range = range - range * zoom
+    range = range - (range / zoom)
+
+    //console.log("start: " + yStart, "end: " + yEnd)
 
     yStart += range / 2
-    yEnd -= range / 2
+    yEnd -= range / 2 
 
-    yStart = Math.floor(yStart / ptPerUnit) * ptPerUnit
+    yStart = Math.floor(yStart / yPtPerUnit) * yPtPerUnit
 
-    if(Math.abs(yEnd - yStart) / ptPerUnit < 10) {
-        ptPerUnit /= 2
-    } else if(Math.abs(yEnd - yStart) / ptPerUnit > 20) {
-        ptPerUnit *= 2
+    if(Math.abs(yEnd - yStart) / yPtPerUnit < 10) {
+        yPtPerUnit /= 2
+    } else if(Math.abs(yEnd - yStart) / yPtPerUnit > 20) {
+        yPtPerUnit *= 2
     }
 
-    console.log(yStart, yEnd, ptPerUnit);
-    for (let y = yStart; y < yEnd; y += ptPerUnit) {
-        ctx.fillText(y / defaultPtPerUnit, coordToScreenX(0, -10), coordToScreenY(y, coordinateFontSize / 3))
+    //console.log("start: " + yStart, "end: " + yEnd, "range: " + range, "ppu: " + yPtPerUnit, "campos: ", cameraPos, "zoom: " + zoom);
+
+    ctx.fillStyle = "#EEEEEE"
+    for (let y = yStart; y < yEnd; y += yPtPerUnit) {
+        if (y / defaultPtPerUnit == 0) continue 
 
         ctx.moveTo(0, coordToScreenY(y))
         ctx.lineTo(canvas.width, coordToScreenY(y))
+
+        ctx.fillText(y / defaultPtPerUnit, coordToScreenX(0, -10), coordToScreenY(y, coordinateFontSize / 3))
     }
 
-    /* ctx.textAlign = 'center'
 
-    let xStart = Math.floor((cameraPos.x - Math.round(canvas.width/2)) / ptPerUnit) * ptPerUnit
-    let xEnd = cameraPos.x + Math.round(canvas.width/2) + ptPerUnit
-    for (let x = xStart; x < xEnd; x += ptPerUnit) {
-        ctx.fillText(x / ptPerUnit, coordToScreenX(-x), coordToScreenY(0, coordinateFontSize))
+    let xStart = cameraPos.x - Math.round(canvas.width/2)
+    let xEnd = cameraPos.x + Math.round(canvas.width/2)
+
+    range = Math.abs(xStart - xEnd)
+    range = range - (range / zoom)
+
+    //console.log("start: " + xStart, "end: " + xEnd)
+    
+    xStart += range / 2
+    xEnd -= range / 2 
+
+    xStart = Math.floor(xStart / xPtPerUnit) * xPtPerUnit
+
+    if(Math.abs(xEnd - xStart) / xPtPerUnit < 10) {
+        xPtPerUnit /= 2
+    } else if(Math.abs(xEnd - xStart) / xPtPerUnit > 20) {
+        xPtPerUnit *= 2
+    }
+
+    ctx.textAlign = 'center'
+
+    
+    for (let x = xStart; x < xEnd; x += xPtPerUnit) {
+        if (x / defaultPtPerUnit == 0) continue
 
         ctx.moveTo(coordToScreenX(-x), 0)
         ctx.lineTo(coordToScreenX(-x), canvas.height)
-    } */
-    
 
-    ctx.strokeStyle = "gray";
+        ctx.fillText(x / defaultPtPerUnit * -1, coordToScreenX(-x), coordToScreenY(0, coordinateFontSize))
+    }
+    
+    drawPoint(1, 2)
+
+    ctx.strokeStyle = "#393E46";
     ctx.stroke()
 
 
@@ -84,7 +117,7 @@ function drawAxis() {
         canvas.height
     )
 
-    ctx.strokeStyle = "black";
+    ctx.strokeStyle = "#00ADB5";
     ctx.stroke()
 
 
@@ -98,7 +131,6 @@ function drawAxis() {
         coordToScreenY(0)
     )
 
-    ctx.strokeStyle = "black";
     ctx.stroke()
 }
 
@@ -122,8 +154,8 @@ canvas.addEventListener('mouseup', () => mousedown = false)
 canvas.addEventListener('mousemove', (e) => {
     if(!mousedown) return
 
-    cameraPos.x += (e.clientX - lastMouseCoord.x) 
-    cameraPos.y += (e.clientY - lastMouseCoord.y) 
+    cameraPos.x += (e.clientX - lastMouseCoord.x) / zoom
+    cameraPos.y += (e.clientY - lastMouseCoord.y) / zoom
 
     lastMouseCoord.x = e.clientX
     lastMouseCoord.y = e.clientY
@@ -132,11 +164,29 @@ canvas.addEventListener('mousemove', (e) => {
 })
 
 canvas.addEventListener('wheel', (e) => {
-    if(e.deltaY > 0) {
-        zoom *= 1.25 
+    if(e.deltaY < 0) {
+        zoom *= 1.05
     } else {
-        zoom *= 0.8
+        zoom *= 0.95
     }
 
     updateCanvas()
 })
+
+
+const params = new URLSearchParams(window.location.search)
+let vicci = params.get("vicci")
+if (vicci != null) {
+    vicci = true
+}
+
+function reset() {
+    window.location.replace(location.pathname)
+}
+
+function drawPoint(x, y) {
+    ctx.beginPath()
+    ctx.arc(coordToScreenX(x), coordToScreenY(y), 10, 0, 2 * Math.PI)
+    ctx.fillStyle = "#00ADB5"
+    ctx.fill()
+}

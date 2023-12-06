@@ -1,4 +1,5 @@
 body {
+    font-family: 'Oswald', sans-serif;
     width: 100vw;
     height: 100vh;
 
@@ -8,6 +9,6 @@ body {
 }
 
 #main-canvas {
-    width: 100%;
     height: 100%;
+    width: 100%;
 }
