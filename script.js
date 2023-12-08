@@ -22,6 +22,7 @@ var yPtPerUnit= defaultPtPerUnit
 var xPtPerUnit = defaultPtPerUnit
 
 const coordinateFontSize = 20
+const textDistanceFromEdge = 10
 
 function updateCanvas() {
     //ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -29,12 +30,13 @@ function updateCanvas() {
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
     drawAxis()
+
+    drawPoint(1, 2)
 }
 
 function drawAxis() {
     ctx.font = `${coordinateFontSize}px serif`
     if (vicci) ctx.drawImage(document.getElementById("szia"), 0, 0, 1920, 1080)
-    ctx.textAlign = 'end'
 
     let yStart = cameraPos.y - Math.round(canvas.height/2)
     let yEnd = cameraPos.y + Math.round(canvas.height/2)
@@ -64,7 +66,13 @@ function drawAxis() {
         ctx.moveTo(0, coordToScreenY(y))
         ctx.lineTo(canvas.width, coordToScreenY(y))
 
-        ctx.fillText(y / defaultPtPerUnit, coordToScreenX(0, -10), coordToScreenY(y, coordinateFontSize / 3))
+        let textWidth = ctx.measureText(y / defaultPtPerUnit).width
+
+        let textXCoord = coordToScreenX(0, -10)
+        textXCoord = Math.min(canvas.width-textDistanceFromEdge, Math.max(textDistanceFromEdge+textWidth, textXCoord))
+
+        ctx.textAlign = 'end'
+        ctx.fillText(y / defaultPtPerUnit, textXCoord, coordToScreenY(y, coordinateFontSize / 3))
     }
 
 
@@ -96,10 +104,14 @@ function drawAxis() {
         ctx.moveTo(coordToScreenX(-x), 0)
         ctx.lineTo(coordToScreenX(-x), canvas.height)
 
-        ctx.fillText(x / defaultPtPerUnit * -1, coordToScreenX(-x), coordToScreenY(0, coordinateFontSize))
+        let textMeasures = ctx.measureText(-x / defaultPtPerUnit)
+        let textHeight = textMeasures.actualBoundingBoxAscent + textMeasures.actualBoundingBoxDescent
+
+        let textYCoord = coordToScreenY(0, coordinateFontSize)
+        textYCoord = Math.min(canvas.height-textDistanceFromEdge, Math.max(textDistanceFromEdge+textHeight, textYCoord))
+
+        ctx.fillText(-x / defaultPtPerUnit, coordToScreenX(-x), textYCoord)
     }
-    
-    drawPoint(1, 2)
 
     ctx.strokeStyle = "#393E46";
     ctx.stroke()
@@ -134,6 +146,13 @@ function drawAxis() {
     ctx.stroke()
 }
 
+function drawPoint(x, y) {
+    ctx.beginPath()
+    ctx.arc(coordToScreenX(x*defaultPtPerUnit), coordToScreenY(y*defaultPtPerUnit), 10, 0, 2 * Math.PI)
+    ctx.fillStyle = "#00ADB5"
+    ctx.fill()
+}
+
 addEventListener("load", () => updateCanvas())
 
 addEventListener("resize", () => {
@@ -163,6 +182,8 @@ canvas.addEventListener('mousemove', (e) => {
     updateCanvas()
 })
 
+canvas.addEventListener('mouseleave', () => mousedown = false)
+
 canvas.addEventListener('wheel', (e) => {
     if(e.deltaY < 0) {
         zoom *= 1.05
@@ -182,11 +203,4 @@ if (vicci != null) {
 
 function reset() {
     window.location.replace(location.pathname)
-}
-
-function drawPoint(x, y) {
-    ctx.beginPath()
-    ctx.arc(coordToScreenX(x), coordToScreenY(y), 10, 0, 2 * Math.PI)
-    ctx.fillStyle = "#00ADB5"
-    ctx.fill()
 }
