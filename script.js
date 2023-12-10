@@ -1,3 +1,4 @@
+const menuWidth = document.getElementById("functions").offsetWidth
 const canvas = document.getElementById('main-canvas')
 const ctx = canvas.getContext('2d')
 
@@ -7,7 +8,7 @@ var lastMouseCoord = {
     y: 0
 }
 
-canvas.width = window.innerWidth
+canvas.width = window.innerWidth - menuWidth
 canvas.height = window.innerHeight
 
 var cameraPos = {
@@ -17,7 +18,7 @@ var cameraPos = {
 
 var zoom = 1
 
-const defaultPtPerUnit = 64
+const defaultPtPerUnit = 50
 var yPtPerUnit= defaultPtPerUnit
 var xPtPerUnit = defaultPtPerUnit
 
@@ -30,8 +31,6 @@ function updateCanvas() {
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
     drawAxis()
-
-    drawPoint(1, 2)
 }
 
 function drawAxis() {
@@ -146,17 +145,10 @@ function drawAxis() {
     ctx.stroke()
 }
 
-function drawPoint(x, y) {
-    ctx.beginPath()
-    ctx.arc(coordToScreenX(x*defaultPtPerUnit), coordToScreenY(y*defaultPtPerUnit), 10, 0, 2 * Math.PI)
-    ctx.fillStyle = "#00ADB5"
-    ctx.fill()
-}
-
 addEventListener("load", () => updateCanvas())
 
 addEventListener("resize", () => {
-    canvas.width = window.innerWidth
+    canvas.width = window.innerWidth - menuWidth
     canvas.height = window.innerHeight
 
     updateCanvas()

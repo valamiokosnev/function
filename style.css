@@ -8,7 +8,29 @@ body {
     overflow: hidden;
 }
 
+#content {
+    display: grid;
+
+    height: 100%;
+}
+
+#functions {
+    grid-column: 1/1;
+
+    width: 300px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+}
+
+#function-input {
+
+}
+
 #main-canvas {
+    grid-column: 2/2;
+
     height: 100%;
     width: 100%;
 }
