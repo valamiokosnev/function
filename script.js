@@ -2,6 +2,11 @@ const menuWidth = document.getElementById("functions").offsetWidth
 const canvas = document.getElementById('main-canvas')
 const ctx = canvas.getContext('2d')
 
+
+var XunitSizeMultipliers = [2, 2.5, 2]
+var YunitSizeMultipliers = [2, 2.5, 2]
+
+
 var mousedown = false
 var lastMouseCoord = {
     x: 0,
@@ -48,13 +53,17 @@ function drawAxis() {
     yStart += range / 2
     yEnd -= range / 2 
 
-    yStart = Math.floor(yStart / yPtPerUnit) * yPtPerUnit
+    if(Math.abs(yEnd - yStart) / yPtPerUnit + 1 < 10) {
+        yPtPerUnit /= YunitSizeMultipliers[YunitSizeMultipliers.length-1]
 
-    if(Math.abs(yEnd - yStart) / yPtPerUnit < 10) {
-        yPtPerUnit /= 2
-    } else if(Math.abs(yEnd - yStart) / yPtPerUnit > 20) {
-        yPtPerUnit *= 2
+        YunitSizeMultipliers.unshift(YunitSizeMultipliers.pop())
+    } else if(Math.abs(yEnd - yStart) / yPtPerUnit + 1 > 20) {
+        yPtPerUnit *= YunitSizeMultipliers[0]
+
+        YunitSizeMultipliers.push(YunitSizeMultipliers.shift())
     }
+
+    yStart = Math.floor(yStart / yPtPerUnit) * yPtPerUnit
 
     //console.log("start: " + yStart, "end: " + yEnd, "range: " + range, "ppu: " + yPtPerUnit, "campos: ", cameraPos, "zoom: " + zoom);
 
@@ -89,9 +98,13 @@ function drawAxis() {
     xStart = Math.floor(xStart / xPtPerUnit) * xPtPerUnit
 
     if(Math.abs(xEnd - xStart) / xPtPerUnit < 10) {
-        xPtPerUnit /= 2
+        xPtPerUnit /= XunitSizeMultipliers[XunitSizeMultipliers.length-1]
+
+        XunitSizeMultipliers.unshift(XunitSizeMultipliers.pop())
     } else if(Math.abs(xEnd - xStart) / xPtPerUnit > 20) {
-        xPtPerUnit *= 2
+        xPtPerUnit *= XunitSizeMultipliers[0]
+
+        XunitSizeMultipliers.push(XunitSizeMultipliers.shift())
     }
 
     ctx.textAlign = 'center'
