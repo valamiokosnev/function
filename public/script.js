@@ -36,7 +36,7 @@ function updateCanvas() {
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
     drawAxis()
-    calculatePoints()
+    calculatePoints(enteredMath)
 }
 
 function drawAxis() {
