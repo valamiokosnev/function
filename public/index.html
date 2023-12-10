@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="hu">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Oswald&display=swap" rel="stylesheet" />
+        <link rel="stylesheet" href="style.css" />
+        <link rel="stylesheet" href="./mathquill-basic.css"/>
+        <script src="./evaluatex/dist/evaluatex.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+        <script src="./mathquill.js"></script>
+        <script src="function.js"></script>
+        <script src="./utils.js" defer></script>
+        <script src="./script.js" defer></script>
+        <title>Function</title>
+    </head>
+    <body>
+        <img src="https://media.tenor.com/patKcXgljGYAAAAd/cursed-cat.gif" id="szia" hidden />
+        <div id="content">
+            <div id="functions">
+                <span id="answer">x=</span>
+                <span id="answer">x=</span>
+                <span id="answer">x=</span>
+                <span id="answer">x=</span>
+            </div>
+            <canvas id="main-canvas"></canvas>
+        </div>
+    </body>
+    <script>        
+        var MQ = MathQuill.getInterface(2);
+
+        var answerSpan = document.getElementById("answer");
+        var answerMathField = MQ.MathField(answerSpan, {
+            handlers: {
+                edit: function () {
+                    var enteredMath = answerMathField.latex();
+                    calculatePoints(enteredMath)
+                    //console.log(enteredMath);
+                }
+            }
+        });
+    </script>
+</html>
