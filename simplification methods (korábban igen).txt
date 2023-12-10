@@ -1,0 +1,21 @@
+Graphing applications like Desmos use a variety of techniques to efficiently calculate the necessary points to represent a function's graph. These techniques can be broadly categorized into numerical methods and symbolic methods.
+
+**Numerical Methods**
+
+1. **Rational Interpolation:** For simple functions with rational expressions, Desmos can use rational interpolation to find the points required for the graph. This method involves dividing the function's domain into intervals and evaluating the function at selected points within each interval.
+
+2. **Chebyshev Interpolation:** For more complex functions, Desmos may employ Chebyshev interpolation. This method involves using Chebyshev polynomials, which are orthogonal polynomials that provide a good approximation to the function.
+
+3. **Newton's Forward Difference Formula:** For functions defined by a table of data points, Desmos can use Newton's forward difference formula to estimate the function's value at intermediate points. This method involves calculating the difference between successive values in the table and using those differences to approximate the function's value between data points.
+
+4. **Newton's Divided Difference Interpolation:** For functions whose data points are evenly spaced, Desmos may use Newton's divided difference interpolation. This method is more efficient than Newton's forward difference formula and can provide more accurate approximations.
+
+**Symbolic Methods**
+
+1. **Symbolic Differentiation:** For functions that can be expressed in a symbolic form, Desmos can use symbolic differentiation to find the function's derivative. The derivative can then be evaluated at specific points to determine the function's slope and tangent line at those points.
+
+2. **Symbolic Integration:** For functions that can be integrated, Desmos can use symbolic integration to find the function's antiderivative. The antiderivative can then be evaluated at specific points to determine the function's value at those points.
+
+3. **Symbolic Substitution:** For functions involving trigonometric or logarithmic expressions, Desmos can use symbolic substitution to convert the expression into a form that is more amenable to numerical evaluation. For instance, it can rewrite trigonometric functions using their double-angle or half-angle identities.
+
+The choice of method depends on the type of function, the desired accuracy, and the available computation time. Numerical methods are generally faster and more efficient for simple functions, while symbolic methods are better suited for functions with known derivatives or antiderivatives.

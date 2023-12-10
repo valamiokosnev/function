@@ -8,10 +8,11 @@
         <link href="https://fonts.googleapis.com/css2?family=Oswald&display=swap" rel="stylesheet" />
         <link rel="stylesheet" href="style.css" />
         <link rel="stylesheet" href="./mathquill-basic.css"/>
+        <script src="function.js" defer></script>
         <script src="./evaluatex/dist/evaluatex.min.js"></script>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
         <script src="./mathquill.js"></script>
-        <script src="function.js"></script>
         <script src="./utils.js" defer></script>
         <script src="./script.js" defer></script>
         <title>Function</title>
@@ -20,26 +21,10 @@
         <img src="https://media.tenor.com/patKcXgljGYAAAAd/cursed-cat.gif" id="szia" hidden />
         <div id="content">
             <div id="functions">
-                <span id="answer">x=</span>
-                <span id="answer">x=</span>
-                <span id="answer">x=</span>
-                <span id="answer">x=</span>
+                <span id="answer"></span>
             </div>
             <canvas id="main-canvas"></canvas>
         </div>
+        <span class="material-symbols-outlined" id="origo">point_scan</span>
     </body>
-    <script>        
-        var MQ = MathQuill.getInterface(2);
-
-        var answerSpan = document.getElementById("answer");
-        var answerMathField = MQ.MathField(answerSpan, {
-            handlers: {
-                edit: function () {
-                    var enteredMath = answerMathField.latex();
-                    calculatePoints(enteredMath)
-                    //console.log(enteredMath);
-                }
-            }
-        });
-    </script>
 </html>

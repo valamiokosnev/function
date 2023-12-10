@@ -24,8 +24,11 @@ body {
     justify-content: stretch;
 }
 
-#function-input {
-
+#functions {
+    background-color: #222831;
+    color: #00ADB5;
+    border-right: 2px solid #940b6b;
+    font-size: large;
 }
 
 #main-canvas {
@@ -33,4 +36,18 @@ body {
 
     height: 100%;
     width: 100%;
+}
+
+#origo {
+    cursor: pointer;
+    user-select: none;
+
+    position: fixed;
+
+    top: 30px;
+    right: 30px;
+
+    border-radius: 5px;
+    padding: 5px;
+    background-color: rgb(208, 208, 208);
 }

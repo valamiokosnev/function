@@ -2,6 +2,8 @@ const menuWidth = document.getElementById("functions").offsetWidth
 const canvas = document.getElementById('main-canvas')
 const ctx = canvas.getContext('2d')
 
+var xStart, xEnd
+var yStart, yEnd
 
 var XunitSizeMultipliers = [2, 2.5, 2]
 var YunitSizeMultipliers = [2, 2.5, 2]
@@ -36,40 +38,27 @@ function updateCanvas() {
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
     drawAxis()
-    calculatePoints(enteredMath)
+
+    if (enteredMath != null && enteredMath.length > 0) calculatePoints(enteredMath)
 }
 
 function drawAxis() {
     ctx.font = `${coordinateFontSize}px serif`
     if (vicci) ctx.drawImage(document.getElementById("szia"), 0, 0, 1920, 1080)
 
-    let yStart = cameraPos.y - Math.round(canvas.height/2)
-    let yEnd = cameraPos.y + Math.round(canvas.height/2)
+    yStart = cameraPos.y - Math.round(canvas.height/2)
+    yEnd = cameraPos.y + Math.round(canvas.height/2)
 
     let range = Math.abs(yStart - yEnd)
     range = range - (range / zoom)
 
-    //console.log("start: " + yStart, "end: " + yEnd)
-
     yStart += range / 2
     yEnd -= range / 2 
 
-    if(Math.abs(yEnd - yStart) / yPtPerUnit + 1 < 10) {
-        yPtPerUnit /= YunitSizeMultipliers[YunitSizeMultipliers.length-1]
-
-        YunitSizeMultipliers.unshift(YunitSizeMultipliers.pop())
-    } else if(Math.abs(yEnd - yStart) / yPtPerUnit + 1 > 20) {
-        yPtPerUnit *= YunitSizeMultipliers[0]
-
-        YunitSizeMultipliers.push(YunitSizeMultipliers.shift())
-    }
-
     yStart = Math.floor(yStart / yPtPerUnit) * yPtPerUnit
 
-    //console.log("start: " + yStart, "end: " + yEnd, "range: " + range, "ppu: " + yPtPerUnit, "campos: ", cameraPos, "zoom: " + zoom);
-
     ctx.fillStyle = "#EEEEEE"
-    for (let y = yStart; y < yEnd; y += yPtPerUnit) {
+    for (let y = yStart; y < yEnd + yPtPerUnit; y += yPtPerUnit) {
         if (y / defaultPtPerUnit == 0) continue 
 
         ctx.moveTo(0, coordToScreenY(y))
@@ -81,37 +70,24 @@ function drawAxis() {
         textXCoord = Math.min(canvas.width-textDistanceFromEdge, Math.max(textDistanceFromEdge+textWidth, textXCoord))
 
         ctx.textAlign = 'end'
-        ctx.fillText(y / defaultPtPerUnit, textXCoord, coordToScreenY(y, coordinateFontSize / 3))
+        ctx.fillText(convertToDisplayNumber(y), textXCoord, coordToScreenY(y, coordinateFontSize / 3))
     }
 
 
-    let xStart = cameraPos.x - Math.round(canvas.width/2)
-    let xEnd = cameraPos.x + Math.round(canvas.width/2)
+    xStart = cameraPos.x - Math.round(canvas.width/2)
+    xEnd = cameraPos.x + Math.round(canvas.width/2)
 
     range = Math.abs(xStart - xEnd)
     range = range - (range / zoom)
-
-    //console.log("start: " + xStart, "end: " + xEnd)
     
     xStart += range / 2
     xEnd -= range / 2 
 
     xStart = Math.floor(xStart / xPtPerUnit) * xPtPerUnit
 
-    if(Math.abs(xEnd - xStart) / xPtPerUnit < 10) {
-        xPtPerUnit /= XunitSizeMultipliers[XunitSizeMultipliers.length-1]
-
-        XunitSizeMultipliers.unshift(XunitSizeMultipliers.pop())
-    } else if(Math.abs(xEnd - xStart) / xPtPerUnit > 20) {
-        xPtPerUnit *= XunitSizeMultipliers[0]
-
-        XunitSizeMultipliers.push(XunitSizeMultipliers.shift())
-    }
-
     ctx.textAlign = 'center'
-
     
-    for (let x = xStart; x < xEnd; x += xPtPerUnit) {
+    for (let x = xStart; x < xEnd + xPtPerUnit; x += xPtPerUnit) {
         if (x / defaultPtPerUnit == 0) continue
 
         ctx.moveTo(coordToScreenX(-x), 0)
@@ -123,7 +99,7 @@ function drawAxis() {
         let textYCoord = coordToScreenY(0, coordinateFontSize)
         textYCoord = Math.min(canvas.height-textDistanceFromEdge, Math.max(textDistanceFromEdge+textHeight, textYCoord))
 
-        ctx.fillText(-x / defaultPtPerUnit, coordToScreenX(-x), textYCoord)
+        ctx.fillText(convertToDisplayNumber(-x), coordToScreenX(-x), textYCoord)
     }
 
     ctx.strokeStyle = "#393E46";
@@ -196,6 +172,23 @@ canvas.addEventListener('wheel', (e) => {
     } else {
         zoom *= 0.95
     }
+
+    updateUnitSizeX()
+
+    updateUnitSizeY()
+
+    updateCanvas()
+})
+
+document.getElementById('origo').addEventListener('click', () => {
+    zoom = 1
+    cameraPos = {
+        x: 0,
+        y: 0
+    }
+
+    xPtPerUnit = defaultPtPerUnit
+    yPtPerUnit = defaultPtPerUnit
 
     updateCanvas()
 })
