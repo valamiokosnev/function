@@ -1,9 +1,7 @@
 function calculatePoints(func) {
     let ptPerPixel = (xEnd-xStart) / canvas.width
     for (let x = xStart; x < xEnd; x+=ptPerPixel) {
-
-        if (func.includes("x")) y = evaluatex(func, {'x' : x}, true)()
-        else y = evaluatex(func, true)()
+        y = evaluatex(func, {'x': x}, true)()
         drawRawPoint(x, y)
     }
 
@@ -15,7 +13,7 @@ function drawPoint(x, y) {
 }
 
 function drawRawPoint(x, y) {
-    ctx.fillRect(coordToScreenX(-x), coordToScreenY(y), 2, 2)
+    ctx.fillRect(coordToScreenX(x), coordToScreenY(y), 2, 2)
 }
 
 var enteredMath

@@ -90,16 +90,17 @@ function drawAxis() {
     for (let x = xStart; x < xEnd + xPtPerUnit; x += xPtPerUnit) {
         if (x / defaultPtPerUnit == 0) continue
 
-        ctx.moveTo(coordToScreenX(-x), 0)
-        ctx.lineTo(coordToScreenX(-x), canvas.height)
+        ctx.moveTo(coordToScreenX(x), 0)
+        ctx.lineTo(coordToScreenX(x), canvas.height)
 
         let textMeasures = ctx.measureText(-x / defaultPtPerUnit)
         let textHeight = textMeasures.actualBoundingBoxAscent + textMeasures.actualBoundingBoxDescent
 
         let textYCoord = coordToScreenY(0, coordinateFontSize)
         textYCoord = Math.min(canvas.height-textDistanceFromEdge, Math.max(textDistanceFromEdge+textHeight, textYCoord))
+        
 
-        ctx.fillText(convertToDisplayNumber(-x), coordToScreenX(-x), textYCoord)
+        ctx.fillText(convertToDisplayNumber(x), coordToScreenX(x), textYCoord)
     }
 
     ctx.strokeStyle = "#393E46";
@@ -155,7 +156,7 @@ canvas.addEventListener('mouseup', () => mousedown = false)
 canvas.addEventListener('mousemove', (e) => {
     if(!mousedown) return
 
-    cameraPos.x += (e.clientX - lastMouseCoord.x) / zoom
+    cameraPos.x -= (e.clientX - lastMouseCoord.x) / zoom
     cameraPos.y += (e.clientY - lastMouseCoord.y) / zoom
 
     lastMouseCoord.x = e.clientX

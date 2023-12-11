@@ -3,7 +3,7 @@ function screenToCoordX(x) {
 }
 
 function coordToScreenX(x, offset=0) {
-    return x * zoom + Math.round(canvas.width/2) + cameraPos.x * zoom + offset
+    return x * zoom + Math.round(canvas.width/2) - cameraPos.x * zoom + offset
 }
 
 
