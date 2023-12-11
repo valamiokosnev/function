@@ -1,8 +1,8 @@
 function calculatePoints(func) {
-    let ptPerPixel = (xEnd-xStart) / canvas.width
-    for (let x = xStart; x < xEnd; x+=ptPerPixel) {
+    let ptPerPixel = (xEnd-xStart) / canvas.width / defaultPtPerUnit
+    for (let x = xStart / defaultPtPerUnit; x < xEnd / defaultPtPerUnit; x+=ptPerPixel) {
         y = evaluatex(func, {'x': x}, true)()
-        drawRawPoint(x, y)
+        drawPoint(x, y)
     }
 
     console.log(xStart, xEnd, ptPerPixel);
